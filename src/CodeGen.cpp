@@ -238,13 +238,17 @@ namespace
       BasicBlock *AssignBB = BasicBlock::Create(M->getContext(), "assign", MainFn);
 
       Builder.CreateBr(IfBB);//check if condition
-      setCurr(IfBB);
+
+      Builder.SetInsertPoint(IfBB);
+      // setCurr(IfBB);
       // Eevaluate the condition
       (*exprIterator)->accept(*this);
       Value *Condition = V;
 
       Builder.CreateCondBr(Condition,AssignBB,IfNotMetBB);
-      setCurr(AssignBB); 
+
+      Builder.SetInsertPoint(AssignBB);
+      // setCurr(AssignBB); 
       // do the required assignments
       auto IfAssignments = *assignIterator; //first row of 2D vector
       for(auto a = IfAssignments.begin(); a != IfAssignments.end();++a)// a is represents each assignment in the first row
@@ -255,8 +259,8 @@ namespace
       Builder.CreateBr(MergeBB);  
       // end of assignment BB
       
-
-      setCurr(IfNotMetBB);
+      Builder.SetInsertPoint(IfNotMetBB);
+      // setCurr(IfNotMetBB);
 
       // if we have iterated all expressions if and all elif statements have been checked
       // so we should either perfrom else statement or merge
@@ -279,7 +283,9 @@ namespace
       Builder.CreateBr(IfBB);
       // end of IfNotMet BB
 
-      setCurr(MergeBB);
+
+      Builder.SetInsertPoint(MergeBB);
+      // setCurr(MergeBB);
       };
 
     virtual void visit(Loop &Node) override
@@ -290,12 +296,17 @@ namespace
       
       // Emit LLVM IR instructions
       Builder.CreateBr(LoopCondBB);
-      setCurr(LoopCondBB);
+      Builder.SetInsertPoint(LoopCondBB);
+      // setCurr(LoopCondBB);
+
       // Assuming there's a function to emit the loop condition expression
       Node.getCondition()->accept(*this);
       Value *Condition = V;
       Builder.CreateCondBr(Condition, LoopBodyBB, AfterLoopBB);
-      setCurr(LoopBodyBB);
+      
+      Builder.SetInsertPoint(LoopBodyBB);
+      // setCurr(LoopBodyBB);
+
       // accept statements within the loop body
       
       auto assignment_iterator = Node.begin(); //  Node.begin() retrieves loop assignments/statements
@@ -304,7 +315,9 @@ namespace
         (*assignment_iterator)->accept(*this);
       }
       Builder.CreateBr(LoopCondBB);//current = LoopbodyBB -> we want to branch to LoopCondBB
-      setCurr(AfterLoopBB);
+
+      Builder.SetInsertPoint(AfterLoopBB);
+      // setCurr(AfterLoopBB);
     };
   };
 }; // namespace
