@@ -253,7 +253,7 @@ namespace
       auto IfAssignments = *assignIterator; //first row of 2D vector
       for(auto a = IfAssignments.begin(); a != IfAssignments.end();++a)// a is represents each assignment in the first row
       {
-        a->accept(*this);// do each assignment in the if statement   
+        (*a)->accept(*this);// do each assignment in the if statement   
       }
       // goto merge BB because the whole ifElse node is performed
       Builder.CreateBr(MergeBB);  
