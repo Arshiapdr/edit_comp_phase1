@@ -224,7 +224,8 @@ Expr *Parser::parseIfElse()
         }
 
         else {
-            A = parseAssign();
+            A = dynamic_cast<Assignment *>(parseAssign());
+            // A = parseAssign();
             if(A)
                 temp_assignments.push_back(A);
             else
@@ -272,7 +273,8 @@ Expr *Parser::parseIfElse()
             }
 
             else {
-                A = parseAssign();
+                A = dynamic_cast<Assignment *>(parseAssign());
+                // A = parseAssign();
                 if(A)
                     temp_assignments.push_back(A);
                 else
@@ -316,7 +318,8 @@ Expr *Parser::parseIfElse()
             }
 
             else {
-                A = parseAssign();
+                A = dynamic_cast<Assignment *>(parseAssign());
+                // A = parseAssign();
                 if(A)
                     temp_assignments.push_back(A);
                 else
@@ -372,7 +375,8 @@ Expr *Parser::parseLoop()
         }
 
         else {
-            A = parseAssign();
+            A = dynamic_cast<Assignment *>(parseAssign());
+            // A = parseAssign();
             if(A)
                 assignments.push_back(A);
             else
