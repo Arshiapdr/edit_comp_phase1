@@ -90,7 +90,7 @@ Expr *Parser::parseDeclaration()
     llvm::SmallVector<llvm::StringRef, 8> Vars;
     llvm::SmallVector<Expr *> Exprs;
 
-    if (expext(Token::KW_int)){
+    if (expect(Token::KW_int)){
         error();
         goto _error2;
     }
