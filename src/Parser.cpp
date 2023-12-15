@@ -90,7 +90,7 @@ Expr *Parser::parseDeclaration()
     llvm::SmallVector<llvm::StringRef, 8> Vars;
     llvm::SmallVector<Expr *> Exprs;
 
-    if (expect(Token::KW_int)){
+    if (expext(Token::KW_int)){
         error();
         goto _error2;
     }
@@ -364,46 +364,71 @@ Expr *Parser::parseLoop()
     Assignment *A;
     llvm::SmallVector<Assignment *> assignments;
 
-    if (!Tok.is(Token::KW_loopc))
+    if (expect(Token::KW_loopc)){
+        error();
         goto _error4;
+    }
 
     advance();
 
     E = parseExpression();
 
-    if (!Tok.is(Token::colon))
+    if (expect(Token::colon)){
+        error();
         goto _error4;
+    }
 
     advance();
 
-    if (!Tok.is(Token::KW_begin))
+    if (expect(Token::KW_begin)){
+        error();
         goto _error4;
+    }
 
     advance();
 
-    while (!Tok.is(Token::KW_end))
-    {
-        if (!Tok.is(Token::ident))
-        {
+    while (!Tok.is(Token::KW_end)){
+        if(Tok.is(Token::ident)){
+            A = parseAssign();
+
+        if(!Tok.is(Token::semicolon)){
             error();
             goto _error4;
         }
-
-        else {
-            // A = dynamic_cast<Assignment *>(parseAssign());
-            A = parseAssign();
-            if(A)
-                assignments.push_back(A);
-            else
-                goto _error4;
+        advance();
+        if(A){
+            assignments.push_back(A);
         }
+        else{
+            error();
+            goto _error4;
+        }
+      }else{
+        error();
+        goto _error4;
+      }
     }
+////////////////////////////
+        // if (!Tok.is(Token::ident))
+        // {
+        //     error();
+        //     goto _error4;
+        // }
+        // else {
+        //     // A = dynamic_cast<Assignment *>(parseAssign());
+        //     A = parseAssign();
+        //     if(A)
+        //         assignments.push_back(A);
+        //     else
+        //         goto _error4;
+        // }
 
-    if (!Tok.is(Token::KW_end))
+    if (expect(Token::KW_end))
     {
         error();
         goto _error4;
     }
+    advance();
 
     return new Loop(E, assignments);
 _error4:
