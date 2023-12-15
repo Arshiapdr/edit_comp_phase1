@@ -72,30 +72,32 @@ namespace
       // Get the name of the variable being assigned.
       auto varName = Node.getLeft()->getVal();
       Value *var_value = Builder.CreateLoad(Int32Ty,nameMap[Node.getLeft()->getVal()]); // ex)a += 2;  -> first we should the current value of a
+      Value *temp;
+
       switch (Node.getOperator())
       {
         case Assignment::Eq:
-            break;
+          break;
         case Assignment::PlEq:
-            Value *temp = Builder.CreateNSWAdd(var_value,val);
-            val = temp;
-            break;
+          temp = Builder.CreateNSWAdd(var_value,val);
+          val = temp;
+          break;
         case Assignment::MulEq:
-            Value *temp = Builder.CreateNSWMul(var_value,val);
-            val = temp;
-            break;
+          temp = Builder.CreateNSWMul(var_value,val);
+          val = temp;
+          break;
         case Assignment::DivEq:
-            Value *temp = Builder.CreateSDiv(var_value,val);
-            val = temp;
-            break;        
+          temp = Builder.CreateSDiv(var_value,val);
+          val = temp;
+          break;        
         case Assignment::ModEq:
-            Value *temp = Builder.CreateURem(var_value,val);
-            val = temp;
-            break;
+          temp = Builder.CreateURem(var_value,val);
+          val = temp;
+          break;
         case Assignment::MinEq:
-            Value *temp = Builder.CreateNSWSub(var_value,val);
-            val = temp;
-            break;
+          temp = Builder.CreateNSWSub(var_value,val);
+          val = temp;
+          break;
       }
 
       // Create a store instruction to assign the value to the variable.
