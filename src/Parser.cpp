@@ -566,37 +566,6 @@ Expr *Parser::parseFactor()
     case Token::l_paren:
         advance();
         Res = parseExpression();
-        if (!consume(Token::r_paren))
-            break;
-    default: // error handling
-        if (!Res)
-            error();
-        while (!Tok.isOneOf(Token::r_paren,Token::star,Token::plus,
-        Token::minus,Token::slash,Token::eoi))
-            advance();
-        break;
-    }
-    return Res;
-}
-
-/*
-Expr *Parser::parseFactor()
-{
-    Expr *Res = nullptr;
-    
-    switch (Tok.getKind())
-    {
-    case Token::number:
-        Res = new Factor(Factor::Number, Tok.getText());
-        advance();
-        break;
-    case Token::ident:
-        Res = new Factor(Factor::Ident, Tok.getText());
-        advance();
-        break;
-    case Token::l_paren:
-        advance();
-        Res = parseExpression();
         if (!expect(Token::r_paren)){
             advance();
             break;
@@ -611,4 +580,4 @@ Expr *Parser::parseFactor()
     }
     return Res;
 }
-*/
+
