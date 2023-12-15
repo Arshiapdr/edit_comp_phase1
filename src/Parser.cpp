@@ -150,7 +150,7 @@ _error2: // TODO: Check this later in case of error :)
     return nullptr;
 }
 
-Expr *Parser::parseAssign()
+Assignment *Parser::parseAssign()
 {
     Factor *F;
     Expr *E;
