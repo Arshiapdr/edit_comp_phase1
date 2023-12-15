@@ -89,7 +89,7 @@ namespace
             val = temp;
             break;        
         case Assignment::ModEq:
-            Value *temp = Builder.CreateSRem(var_value,val);
+            Value *temp = Builder.CreateURem(var_value,val);
             val = temp;
             break;
         case Assignment::MinEq:
@@ -197,6 +197,7 @@ namespace
 
           V = Left;  
           break;
+        }
       }
     };
 
@@ -214,7 +215,7 @@ namespace
             Builder.CreateStore(val,nameMap[Var]);
       }
       // instanciate remaining declared variables with 0
-      for(Vars_iterator;Vars_iterator != Node.endVars(),Vars_iterator++)
+      for(Vars_iterator;Vars_iterator != Node.endVars();Vars_iterator++)
       {
             Value *zero = ConstantInt::get(Int32Ty,0,true);
             StringRef Var = *Vars_iterator;
@@ -237,85 +238,55 @@ namespace
       // Iterate through each expression and corresponding assignments
       auto exprIterator = Node.beginExprs();
       auto assignIterator = Node.beginAssigns2D();
+      
+      BasicBlock *IfBB = BasicBlock::Create(M->getContext(), "if", MainFn);// for checking conditions
+      BasicBlock *IfNotMetBB = BasicBlock::Create(M->getContext(), "if.not.met", MainFn);
+      BasicBlock *AssignBB = BasicBlock::Create(M->getContext(), "assign", MainFn);
 
+      Builder.CreateBr(IfBB);//check if condition
+      setCurr(IfBB);
+      // Eevaluate the condition
+      (*exprIterator)->accept(*this);
+      Value *Condition = V;
 
-  
-      for (; exprIterator != Node.endExprs(); ++exprIterator, ++assignIterator)
+      Builder.CreateCondBr(Condition,AssigBB,IfNotMetBB);
+      setCurr(AssignBB); 
+      // do the required assignments
+      auto IfAssignments = *assignIterator; //first row of 2D vector
+      for(auto a : IfAssignments.begin(); a != IfAssignments.end();++a)// a is represents each assignment in the first row
       {
-        BasicBlock *IfBB = BasicBlock::Create(M->getContext(), "if", MainFn); 
-        Builder.Create(IfBB);//check if condition
-        setCurr(IfBB);
-        // Emit LLVM IR instructions for the condition
-        (*exprIterator)->accept(*this);
-        Value *Condition = V;
-        
-        Builder.CreateCondBr(Condition,)  
-        //conditional branch to Merge considering the presence of an else statement 
-        Builder.CreateCondBr(Condition, IfBB, ElseBB ? ElseBB : MergeBB);
+        a->accept(*this);// do each assignment in the if statement   
+      }
+      // goto merge BB because the whole ifElse node is performed
+      Builder.CreateBr(MergeBB);  
+      // end of assignment BB
+      
 
-        setCurr(IfBB);
-        auto IfAssignments = *assignIterator; //first row of 2D vector
-        for(auto a : IfAssignments.begin; a != IfAssignments.end();++a)// a is represents each assignment in the first row
+      setCurr(IfNotMetBB);
+
+      // if we have iterated all expressions if and all elif statements have been checked
+      // so we should either perfrom else statement or merge
+      if(exprIterator == Node.endExprs())
+      {
+        if(Node.getHasElse())
         {
-          a->accept(*this);// do each assignment in the if statement   
+          ++assignIterator;
+          Builder.CreateBr(AssigBB);
         }
-        // goto merge BB because the whole ifElse node is performed
-        Builder.CreateBr(MergeBB);
-      }
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-    
-      // First expression corresponds to 'if', subsequent expressions to 'elif'
-      for (; exprIterator != Node.endExprs(); ++exprIterator, ++assignIterator)
-      {
-          BasicBlock *IfBB = BasicBlock::Create(M->getContext(), "if", MainFn);
-
-          // Emit LLVM IR instructions for the condition
-          (*exprIterator)->accept(*this);
-          Value *Condition = V;
-
-          // Create conditional branch instructions
-          Builder.CreateCondBr(Condition, IfBB, ElseBB ? ElseBB : MergeBB);
-
-          // Emit LLVM IR for the 'if' block
-          setCurr(IfBB);
-          for (auto assign : *assignIterator) {
-              assign->accept(*this);
-          }
-          
-          Builder.CreateBr(MergeBB);//current = IfBB 
-
-          // If there's an 'else' block, create a new block for the next 'elif'
-          if (!ElseBB)
-              ElseBB = BasicBlock::Create(M->getContext(), "else", MainFn);
-      }
-
-      // Emit LLVM IR for the 'else' block if it exists
-      if (ElseBB)
-      {
-          setCurr(ElseBB);
-          auto elseAssignIterator = Node.elseAssigns_begin();
-          auto elseAssignEnd = Node.elseAssigns_end();
-          for (; elseAssignIterator != elseAssignEnd; ++elseAssignIterator) {
-              (*elseAssignIterator)->accept(*this);
-          }
+        else
+        {
           Builder.CreateBr(MergeBB);
+        }
       }
 
-      // Set the current block to the merge block
+      ++exprIterator;
+      ++assignIterator;
+
+      Builder.Branch(IfBB);
+      // end of IfNotMet BB
+
       setCurr(MergeBB);
-    };
+      };
 
     virtual void visit(Loop &Node) override
     {  
@@ -340,7 +311,7 @@ namespace
       }
       Builder.CreateBr(LoopCondBB);//current = LoopbodyBB -> we want to branch to LoopCondBB
       setCurr(AfterLoopBB);
-      };
+    };
   };
 }; // namespace
 
