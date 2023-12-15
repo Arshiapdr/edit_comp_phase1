@@ -71,7 +71,7 @@ namespace
 
       // Get the name of the variable being assigned.
       auto varName = Node.getLeft()->getVal();
-      Value *var_value = Builder.CreateLoad(Int32Ty,nameMap[Node.getLeft()]); // ex)a += 2;  -> first we should the current value of a
+      Value *var_value = Builder.CreateLoad(Int32Ty,nameMap[Node.getLeft()->getVal()]); // ex)a += 2;  -> first we should the current value of a
       switch (Node.getOperator())
       {
         case Assignment::Eq:
