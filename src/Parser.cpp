@@ -150,6 +150,7 @@ Expr *Parser::parseAssign()
     Factor *F;
     Expr *E;
     F = (Factor *)(parseFactor());
+    Assignment::Operator Op;
 
     if (!Tok.is(Token::equal) || !Tok.is(Token::plus_equal) || !Tok.is(Token::mult_equal)
     || !Tok.is(Token::div_equal) || !Tok.is(Token::minus_equal) || !Tok.is(Token::mod_equal))
@@ -159,26 +160,26 @@ Expr *Parser::parseAssign()
     }
 
     if (Tok.is(Token::equal)) {
-        Assignment::Operator Op = Assignment::Eq;
+        Op = Assignment::Eq;
     }
     else if(Tok.is(Token::plus_equal)) {
-        Assignment::Operator Op = Assignment::PlEq;
+        Op = Assignment::PlEq;
     }
     else if(Tok.is(Token::mult_equal)) {
-        Assignment::Operator Op = Assignment::MulEq;
+        Op = Assignment::MulEq;
     }
     else if(Tok.is(Token::div_equal)) {
-        Assignment::Operator Op = Assignment::DivEq;
+        Op = Assignment::DivEq;
     }
     else if(Tok.is(Token::minus_equal)) {
-        Assignment::Operator Op = Assignment::MinEq;
+        Op = Assignment::MinEq;
     }
     else {
-        Assignment::Operator Op = Assignment::ModEq;
+        Op = Assignment::ModEq;
     }
 
     advance();
-    E = parseExpr();
+    E = parseExpression();
     return new Assignment(Op, F, E);
 }
 
@@ -277,7 +278,7 @@ Expr *Parser::parseIfElse()
             }
         }
 
-        assignments.push_back(temp_assignments)
+        assignments.push_back(temp_assignments);
 
         if (!Tok.is(Token::KW_end))
         {
@@ -321,7 +322,7 @@ Expr *Parser::parseIfElse()
             }
         }
 
-        assignments.push_back(temp_assignments)
+        assignments.push_back(temp_assignments);
 
         if (!Tok.is(Token::KW_end))
         {
@@ -529,7 +530,7 @@ Expr *Parser::parseFactor()
         break;
     case Token::l_paren:
         advance();
-        Res = parseExpr();
+        Res = parseExpression();
         if (!consume(Token::r_paren))
             break;
     default: // error handling
