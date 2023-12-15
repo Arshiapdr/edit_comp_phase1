@@ -246,8 +246,8 @@ namespace
       Builder.CreateCondBr(Condition,AssignBB,IfNotMetBB);
       setCurr(AssignBB); 
       // do the required assignments
-      auto &IfAssignments = *assignIterator; //first row of 2D vector
-      for(auto a : IfAssignments.begin(); a != IfAssignments.end();++a)// a is represents each assignment in the first row
+      auto IfAssignments = *assignIterator; //first row of 2D vector
+      for(auto a = IfAssignments.begin(); a != IfAssignments.end();++a)// a is represents each assignment in the first row
       {
         a->accept(*this);// do each assignment in the if statement   
       }
