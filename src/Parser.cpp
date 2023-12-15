@@ -481,17 +481,18 @@ Expr *Parser::parseHardComparison()
 Expr *Parser::parsePlusMinus()
 {
     Expr *Left = parseTerm();
+    BinaryOp::Operator Op;
     
     while (Tok.isOneOf(Token::star, Token::slash, Token::mod))
     {
         if (Tok.is(Token::star)) {
-            BinaryOp::Operator Op = BinaryOp::Mul;
+            Op = BinaryOp::Mul;
         }
         else if(Tok.is(Token::slash)) {
-            BinaryOp::Operator Op = BinaryOp::Div;
+            Op = BinaryOp::Div;
         }
         else {
-            BinaryOp::Operator Op = BinaryOp::Mod;
+            Op = BinaryOp::Mod;
         }
         advance();
         Expr *Right = parseTerm();
