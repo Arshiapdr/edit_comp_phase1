@@ -89,13 +89,22 @@ public:
   };
 
   virtual void visit(Declaration &Node) override {
-    for (auto I = Node.begin(), E = Node.end(); I != E;
+    for (auto I = Node.beginVars(), E = Node.endVars(); I != E;
          ++I) {
       if (!Scope.insert(*I).second)
         error(Twice, *I); // If the insertion fails (element already exists in Scope), report a "Twice" error
     }
-    if (Node.getExpr())
-      Node.getExpr()->accept(*this); // If the Declaration node has an expression, recursively visit the expression node
+
+    if(Node.beginExprs())
+    {
+    for (auto I = Node.beginExprs(),E = Node.endExprs();I != E ; ++I)
+    {
+      (*I)->accept(*this);
+    }
+    }
+
+    // if (Node.getExpr())
+    //   Node.getExpr()->accept(*this); // If the Declaration node has an expression, recursively visit the expression node
   };
 };
 }
