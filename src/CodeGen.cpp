@@ -22,7 +22,7 @@ namespace
     Value *V; // current calculated value updated through tree traversal
     StringMap<AllocaInst *> nameMap;// maps a variable name to the value that's returned by calc_read()
     FunctionType *CalcWriteFnTy;
-    Function *CalcWriteFn
+    Function *CalcWriteFn;
 
   public:
     // Constructor for the visitor class.
