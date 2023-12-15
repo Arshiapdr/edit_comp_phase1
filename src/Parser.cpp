@@ -10,48 +10,47 @@ AST *Parser::parse()
 AST *Parser::parseGSM()
 {
     llvm::SmallVector<Expr *> exprs;
-    Expr *declaration;
-    Assignment *assign;
-    Expr *ifelse;
-    Expr *loop;
-
     while (!Tok.is(Token::eoi))
     {
         switch (Tok.getKind())
         {
         case Token::KW_int:
-            // Expr *declaration;
+            Expr *declaration;
             declaration = parseDeclaration();
 
-            // if (!Tok.is(Token::semicolon))
-            // {
-            //     error();
-            //     goto _error1;
-            // }
             if (declaration)
                 exprs.push_back(declaration);
             else
-                goto _error1;
+                break;
+
+            if (expect(Token::semicolon))
+            {
+                error();
+            }
+            advance();
             break;
 
         case Token::ident:
-            // Expr *assign;
-            // Assignment *assign;
+            Expr *assign;
+            //Assignment *assign;
             assign = parseAssign();
 
             if (!Tok.is(Token::semicolon))
             {
                 error();
-                goto _error1;
             }
             if (assign)
                 exprs.push_back(assign);
             else
-                goto _error1;
+                error();
+            if(expect(Token::semicolon))
+                error();
+            advance();
             break;
 
+
         case Token::KW_if:
-            // Expr *ifelse;
+            Expr *ifelse;
             ifelse = parseIfElse();
 
             if (ifelse)
@@ -61,7 +60,7 @@ AST *Parser::parseGSM()
             break;
 
         case Token::KW_loopc:
-            // Expr *loop;
+            Expr *loop;
             loop = parseLoop();
 
             if (loop)
@@ -71,10 +70,10 @@ AST *Parser::parseGSM()
             break;
 
         default:
-            goto _error1;
+            error();
             break;
         }
-        advance(); // TODO: watch this part
+        //advance(); // TODO: watch this part
     }
     return new GSM(exprs);
 _error1:
@@ -91,13 +90,17 @@ Expr *Parser::parseDeclaration()
     llvm::SmallVector<llvm::StringRef, 8> Vars;
     llvm::SmallVector<Expr *> Exprs;
 
-    if (!Tok.is(Token::KW_int))
+    if (expext(Token::KW_int)){
+        error();
         goto _error2;
+    }
 
     advance();
 
-    if (expect(Token::ident))
+    if (expect(Token::ident)){
+        error();
         goto _error2;
+    }
 
     Vars.push_back(Tok.getText());
     vars_count += 1;
@@ -107,8 +110,10 @@ Expr *Parser::parseDeclaration()
     {
         advance();
 
-        if (expect(Token::ident))
+        if (expect(Token::ident)){
+            error();
             goto _error2;
+        }
 
         Vars.push_back(Tok.getText());
         vars_count += 1;
@@ -141,7 +146,7 @@ Expr *Parser::parseDeclaration()
         }
     }
 
-    if (expect(Token::semicolon) || exprs_count > vars_count)
+    if (!Tok.is(Token::semicolon) || exprs_count > vars_count)
         goto _error2;
 
     return new Declaration(Vars, Exprs);
@@ -158,12 +163,12 @@ Assignment *Parser::parseAssign()
     F = (Factor *)(parseFactor());
     Assignment::Operator Op;
 
-    if (!Tok.is(Token::equal) || !Tok.is(Token::plus_equal) || !Tok.is(Token::mult_equal)
-    || !Tok.is(Token::div_equal) || !Tok.is(Token::minus_equal) || !Tok.is(Token::mod_equal))
-    {
-        error();
-        return nullptr;
-    }
+    // if (!Tok.is(Token::equal) || !Tok.is(Token::plus_equal) || !Tok.is(Token::mult_equal)
+    // || !Tok.is(Token::div_equal) || !Tok.is(Token::minus_equal) || !Tok.is(Token::mod_equal))
+    // {
+    //     error();
+    //     return nullptr;
+    // }
 
     if (Tok.is(Token::equal)) {
         Op = Assignment::Eq;
@@ -180,8 +185,12 @@ Assignment *Parser::parseAssign()
     else if(Tok.is(Token::minus_equal)) {
         Op = Assignment::MinEq;
     }
-    else {
+    else if (Tok.is(Token::mod_equal)) {
         Op = Assignment::ModEq;
+    }
+    else{
+        error();
+        return nullptr;
     }
 
     advance();
@@ -545,18 +554,15 @@ Expr *Parser::parseFactor()
     case Token::l_paren:
         advance();
         Res = parseExpression();
-        if (!consume(Token::r_paren))
+        if (!expect(Token::r_paren)){
+            advance();
             break;
+        }
     default: // error handling
         if (!Res)
             error();
-        while (!Tok.isOneOf(Token::power, Token::star, Token::slash, 
-                            Token::mod, Token::plus, Token::minus,
-                            Token::hard_comp_greater, Token::hard_comp_lower, 
-                            Token::soft_comp_greater, Token::soft_comp_lower,
-                            Token::is_equal, Token::is_not_equal, Token::KW_logical_and,
-                            Token::KW_logical_or, Token::r_paren, Token::colon,
-                            Token::semicolon, Token::comma, Token::eoi))
+        while (!Tok.isOneOf(Token::r_paren,Token::star,Token::plus,
+        Token::minus,Token::slash,Token::eoi))
             advance();
         break;
     }
