@@ -10,19 +10,24 @@ AST *Parser::parse()
 AST *Parser::parseGSM()
 {
     llvm::SmallVector<Expr *> exprs;
+    Expr *declaration;
+    Assignment *assign;
+    Expr *ifelse;
+    Expr *loop;
+
     while (!Tok.is(Token::eoi))
     {
         switch (Tok.getKind())
         {
         case Token::KW_int:
-            Expr *declaration;
+            // Expr *declaration;
             declaration = parseDeclaration();
 
-            if (!Tok.is(Token::semicolon))
-            {
-                error();
-                goto _error1;
-            }
+            // if (!Tok.is(Token::semicolon))
+            // {
+            //     error();
+            //     goto _error1;
+            // }
             if (declaration)
                 exprs.push_back(declaration);
             else
@@ -30,7 +35,7 @@ AST *Parser::parseGSM()
             break;
 
         case Token::ident:
-            Expr *assign;
+            // Expr *assign;
             // Assignment *assign;
             assign = parseAssign();
 
@@ -46,7 +51,7 @@ AST *Parser::parseGSM()
             break;
 
         case Token::KW_if:
-            Expr *ifelse;
+            // Expr *ifelse;
             ifelse = parseIfElse();
 
             if (ifelse)
@@ -56,7 +61,7 @@ AST *Parser::parseGSM()
             break;
 
         case Token::KW_loopc:
-            Expr *loop;
+            // Expr *loop;
             loop = parseLoop();
 
             if (loop)
