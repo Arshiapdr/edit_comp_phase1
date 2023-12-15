@@ -571,13 +571,8 @@ Expr *Parser::parseFactor()
     default: // error handling
         if (!Res)
             error();
-        while (!Tok.isOneOf(Token::power, Token::star, Token::slash, 
-                            Token::mod, Token::plus, Token::minus,
-                            Token::hard_comp_greater, Token::hard_comp_lower, 
-                            Token::soft_comp_greater, Token::soft_comp_lower,
-                            Token::is_equal, Token::is_not_equal, Token::KW_logical_and,
-                            Token::KW_logical_or, Token::r_paren, Token::colon,
-                            Token::semicolon, Token::comma, Token::eoi))
+        while (!Tok.isOneOf(Token::r_paren,Token::star,Token::plus,
+        Token::minus,Token::slash,Token::eoi))
             advance();
         break;
     }
