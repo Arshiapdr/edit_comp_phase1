@@ -30,8 +30,8 @@ AST *Parser::parseGSM()
             break;
 
         case Token::ident:
-            Expr *assign;
-            // Assignment *assign;
+            // Expr *assign;
+            Assignment *assign;
             assign = parseAssign();
 
             if (!Tok.is(Token::semicolon))
@@ -122,6 +122,8 @@ Expr *Parser::parseDeclaration()
             goto _error2;
         }
 
+        advance();
+
         while (Tok.is(Token::comma))
         {
             advance();
@@ -133,6 +135,8 @@ Expr *Parser::parseDeclaration()
             else {
                 goto _error2;
             }
+
+            advance();
         }
     }
 
@@ -206,6 +210,8 @@ Expr *Parser::parseIfElse()
     else
         goto _error3;
 
+    advance();
+
     if (!Tok.is(Token::colon))
         goto _error3;
 
@@ -231,6 +237,8 @@ Expr *Parser::parseIfElse()
                 temp_assignments.push_back(A);
             else
                 goto _error3;
+
+            advance();
         }
     }
 
@@ -252,6 +260,8 @@ Expr *Parser::parseIfElse()
             expressions.push_back(E);
         else
             goto _error3;
+
+        advance();
 
         if (!Tok.is(Token::colon))
             goto _error3;
@@ -280,6 +290,8 @@ Expr *Parser::parseIfElse()
                     temp_assignments.push_back(A);
                 else
                     goto _error3;
+
+                advance();
             }
         }
 
@@ -325,6 +337,7 @@ Expr *Parser::parseIfElse()
                     temp_assignments.push_back(A);
                 else
                     goto _error3;
+                advance();
             }
         }
 
@@ -357,6 +370,8 @@ Expr *Parser::parseLoop()
 
     E = parseExpression();
 
+    advance();
+
     if (!Tok.is(Token::colon))
         goto _error4;
 
@@ -382,6 +397,8 @@ Expr *Parser::parseLoop()
                 assignments.push_back(A);
             else
                 goto _error4;
+
+            advance();
         }
     }
 
