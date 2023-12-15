@@ -181,10 +181,8 @@ namespace
         V = Builder.CreateSRem(Left, Right);
         break;
       case BinaryOp::Pow: //ERROR
-        int iterations;
-        Value *Iterator = Right;
-        Node.getVal().getAsInteger(10, iterations);
-        Iterator = ConstantInt::get(Int32Ty, iterations, true);
+        auto *intConstant = dyn_cast<ConstantInt>(Right);
+        int iterations = intConstant->getSExtValue();
         Value *NewLeft = Left;
 
         for (int i = 0; i < iterations - 1; i++)
