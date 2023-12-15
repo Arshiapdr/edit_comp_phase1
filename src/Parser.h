@@ -42,7 +42,7 @@ class Parser
 
     AST *parseGSM();
     Expr *parseDeclaration();
-    Expr *parseAssign();
+    Assignment *parseAssign();
     Expr *parseIfElse();
     Expr *parseLoop();
     Expr *parseExpression();
