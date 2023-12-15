@@ -179,20 +179,18 @@ namespace
         V = Builder.CreateSRem(Left, Right);
         break;
       case BinaryOp::Pow: //ERROR
-        Value *Iterator = Right;
-        Value *NewRight = Left;
         int iterations;
-        int left_value;
+        Value *Iterator = Right;
         Node.getVal().getAsInteger(10, iterations);
         Iterator = ConstantInt::get(Int32Ty, iterations, true);
-        Node.getVal().getAsInteger(10, left_value);
-        NewRight = ConstantInt::get(Int32Ty, left_value, true);
-        for (int i = 0; i < iterations - 2; i++)
+        Value *NewLeft = Left;
+
+        for (int i = 0; i < iterations - 1; i++)
         {
-          NewRight *= NewRight;
+          Left = Builder.CreateNSWMul(Left, NewLeft);
         }
 
-        V = Builder.CreateNSWSub(Left, NewRight);
+        V = Left;
         break;
       }
     };
@@ -300,7 +298,7 @@ namespace
       setCurr(LoopBodyBB);
       // accept statements within the loop body
       
-      auto assignment_iterator = Node.begin()//  Node.begin() retrieves loop assignments/statements
+      auto assignment_iterator = Node.begin(); //  Node.begin() retrieves loop assignments/statements
       for(assignment_iterator;assignment_iterator != Node.end();++assignment_iterator)
       {
         (*assignment_iterator)->accept(*this);
