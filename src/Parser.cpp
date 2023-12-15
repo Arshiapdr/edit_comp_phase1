@@ -30,7 +30,8 @@ AST *Parser::parseGSM()
             break;
 
         case Token::ident:
-            Expr *assign;
+            // Expr *assign;
+            Assignment *assign;
             assign = parseAssign();
 
             if (!Tok.is(Token::semicolon))
@@ -145,7 +146,7 @@ _error2: // TODO: Check this later in case of error :)
     return nullptr;
 }
 
-Expr *Parser::parseAssign()
+Assignment *Parser::parseAssign()
 {
     Factor *F;
     Expr *E;
@@ -224,8 +225,8 @@ Expr *Parser::parseIfElse()
         }
 
         else {
-            A = dynamic_cast<Assignment *>(parseAssign());
-            // A = parseAssign();
+            // A = dynamic_cast<Assignment *>(parseAssign());
+            A = parseAssign();
             if(A)
                 temp_assignments.push_back(A);
             else
@@ -273,8 +274,8 @@ Expr *Parser::parseIfElse()
             }
 
             else {
-                A = dynamic_cast<Assignment *>(parseAssign());
-                // A = parseAssign();
+                // A = dynamic_cast<Assignment *>(parseAssign());
+                A = parseAssign();
                 if(A)
                     temp_assignments.push_back(A);
                 else
@@ -318,8 +319,8 @@ Expr *Parser::parseIfElse()
             }
 
             else {
-                A = dynamic_cast<Assignment *>(parseAssign());
-                // A = parseAssign();
+                // A = dynamic_cast<Assignment *>(parseAssign());
+                A = parseAssign();
                 if(A)
                     temp_assignments.push_back(A);
                 else
@@ -375,8 +376,8 @@ Expr *Parser::parseLoop()
         }
 
         else {
-            A = dynamic_cast<Assignment *>(parseAssign());
-            // A = parseAssign();
+            // A = dynamic_cast<Assignment *>(parseAssign());
+            A = parseAssign();
             if(A)
                 assignments.push_back(A);
             else
