@@ -441,7 +441,7 @@ Expr *Parser::parseLoop()
 
             if (!Tok.is(Token::semicolon)) {
                 error();
-                goto _error;
+                goto _error4;
             }
             advance();
 
