@@ -71,7 +71,7 @@ namespace
 
       // Get the name of the variable being assigned.
       auto varName = Node.getLeft()->getVal();
-      Value *var_value = Builder.CreateLoad(Int32Ty,nameMap[Node.getLeft()])// ex)a += 2;  -> first we should the current value of a
+      Value *var_value = Builder.CreateLoad(Int32Ty,nameMap[Node.getLeft()]); // ex)a += 2;  -> first we should the current value of a
       switch (Node.getOperator())
       {
         case Assignment::Eq:
@@ -178,26 +178,22 @@ namespace
       case BinaryOp::Mod:
         V = Builder.CreateSRem(Left, Right);
         break;
-      case BinaryOp::Pow:
-        int right_value = 0;
-        Value *NewRight = (Value *) Node.getRight();
-        NewRight -> getVal().getAsInteger(10, right_value);
-        Value *NewLeft = Left;
-      
-        if (right_value == 0) {
-          V = ConstantInt::get(Int32Ty, 1, true);
-          break;
+      case BinaryOp::Pow: //ERROR
+        Value *Iterator = Right;
+        Value *NewRight = Left;
+        int iterations;
+        int left_value;
+        Node.getVal().getAsInteger(10, iterations);
+        Iterator = ConstantInt::get(Int32Ty, iterations, true);
+        Node.getVal().getAsInteger(10, left_value);
+        NewRight = ConstantInt::get(Int32Ty, left_value, true);
+        for (int i = 0; i < iterations - 2; i++)
+        {
+          NewRight *= NewRight;
         }
 
-        else {
-          for (int i = 0; i < right_value - 1; i++)
-          {
-           Left = Builder.CreateNSWMul(Left, NewLeft);
-          }
-
-          V = Left;  
-          break;
-        }
+        V = Builder.CreateNSWSub(Left, NewRight);
+        break;
       }
     };
 
@@ -249,7 +245,7 @@ namespace
       (*exprIterator)->accept(*this);
       Value *Condition = V;
 
-      Builder.CreateCondBr(Condition,AssigBB,IfNotMetBB);
+      Builder.CreateCondBr(Condition,AssignBB,IfNotMetBB);
       setCurr(AssignBB); 
       // do the required assignments
       auto IfAssignments = *assignIterator; //first row of 2D vector
@@ -282,7 +278,7 @@ namespace
       ++exprIterator;
       ++assignIterator;
 
-      Builder.Branch(IfBB);
+      Builder.CreateBr(IfBB);
       // end of IfNotMet BB
 
       setCurr(MergeBB);
