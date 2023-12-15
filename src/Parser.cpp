@@ -186,7 +186,9 @@ Expr *Parser::parseAssign()
 Expr *Parser::parseIfElse()
 {
     Expr *E;
-    Assignment *A;
+    Expr *A;
+    // Assignment *A;
+
     llvm::SmallVector<Expr *> expressions;
     llvm::SmallVector<llvm::SmallVector<Assignment *>> assignments;
     llvm::SmallVector<Assignment *> temp_assignments;
@@ -340,7 +342,8 @@ _error3:
 Expr *Parser::parseLoop()
 {
     Expr *E;
-    Assignment *A;
+    Expr *A;
+    // Assignment *A;
     llvm::SmallVector<Assignment *> assignments;
 
     if (!Tok.is(Token::KW_loopc))
