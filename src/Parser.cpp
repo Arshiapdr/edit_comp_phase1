@@ -209,146 +209,133 @@ Expr *Parser::parseIfElse()
     llvm::SmallVector<Assignment *> temp_assignments;
     bool hasElse = false; //NEW
 
-    if (!Tok.is(Token::KW_if))
-        goto _error3;
+    if (expect(Token::KW_if))
+        error();
 
     advance();
 
     E = parseExpression();
-    if(E)
-        expressions.push_back(E);
-    else
-        goto _error3;
+    expressions.push_back(E);
+    
 
-    if (!Tok.is(Token::colon))
-        goto _error3;
+    if (expect(Token::colon))
+        error();
 
     advance();
 
-    if (!Tok.is(Token::KW_begin))
-        goto _error3;
+    if (expect(Token::KW_begin))
+        error();
 
     advance();
 
-    while (!Tok.is(Token::KW_end))
-    {
-        if (!Tok.is(Token::ident))
-        {
-            error();
-            goto _error3;
-        }
-
-        else {
-            // A = dynamic_cast<Assignment *>(parseAssign());
+    while (!Tok.is(Token::KW_end)){
+        if(Tok.is(Token::ident)){
             A = parseAssign();
+
+            if (!Tok.is(Token::semicolon))
+            {
+                error();
+            }
+            advance();
             if(A)
                 temp_assignments.push_back(A);
             else
-                goto _error3;
+                error();
+        }else{
+            error();
         }
     }
-
     assignments.push_back(temp_assignments);
 
-    if (!Tok.is(Token::KW_end))
+    if (expect(Token::KW_end))
     {
         error();
-        goto _error3;
     }
-
     advance();
     
     while (Tok.is(Token::KW_elif)) {
+        //ERROR PRONE
         advance();
 
         E = parseExpression();
-        if(E)
-            expressions.push_back(E);
-        else
-            goto _error3;
-
-        if (!Tok.is(Token::colon))
-            goto _error3;
-
+        expressions.push_back(E);
+        
+        if (expect(Token::colon))
+            error();
         advance();
 
-        if (!Tok.is(Token::KW_begin))
-            goto _error3;
+        if (expect(Token::KW_begin))
+            error();
 
         advance();
 
         temp_assignments.clear();
         
-        while (!Tok.is(Token::KW_end))
-        {
-            if (!Tok.is(Token::ident))
+        while (!Tok.is(Token::KW_end)){
+            if (Tok.is(Token::ident)) {
+            A = parseAssign();
+
+            if (!Tok.is(Token::semicolon))
             {
                 error();
-                goto _error3;
             }
-
-            else {
-                // A = dynamic_cast<Assignment *>(parseAssign());
-                A = parseAssign();
-                if(A)
-                    temp_assignments.push_back(A);
-                else
-                    goto _error3;
-            }
+            advance();
+            if (A)
+                temp_assignments.push_back(A);
+            else
+                error();
+        } else error();
         }
 
         assignments.push_back(temp_assignments);
-
-        if (!Tok.is(Token::KW_end))
-        {
-            error();
-            goto _error3;
-        }
-
         advance();
+        // if (!Tok.is(Token::KW_end))
+        // {
+        //     error();
+        //     goto _error3;
+        // }
     }
     
     if (Tok.is(Token::KW_else)) {
         advance();
         hasElse = true;//NEW
 
-        if (!Tok.is(Token::colon))
-            goto _error3;
+        if (expect(Token::colon))
+            error();
 
         advance();
 
-        if (!Tok.is(Token::KW_begin))
-            goto _error3;
+        if (expect(Token::KW_begin))
+            error();
 
         advance();
         
         temp_assignments.clear();
 
-        while (!Tok.is(Token::KW_end))
-        {
-            if (!Tok.is(Token::ident))
-            {
-                error();
-                goto _error3;
-            }
-
-            else {
-                // A = dynamic_cast<Assignment *>(parseAssign());
+        while (!Tok.is(Token::KW_end)){
+           if (Tok.is(Token::ident)) {
                 A = parseAssign();
-                if(A)
+
+                if (!Tok.is(Token::semicolon))
+                {
+                    error();
+                    goto _error3;
+                }
+                advance();
+                if (A)
                     temp_assignments.push_back(A);
                 else
-                    goto _error3;
-            }
+                    error();
+            } else error();
         }
 
         assignments.push_back(temp_assignments);
-
-        if (!Tok.is(Token::KW_end))
-        {
-            error();
-            goto _error3;
-        }
+        advance();
+        // if (!Tok.is(Token::KW_end))
+        // {
+        //     error();
+        //     goto _error3;
+        // }
     }
     return new IfElse(expressions, assignments, hasElse);// NEW
 _error3:
