@@ -270,7 +270,11 @@ Expr *Parser::parseIfElse()
     {
         error();
     }
-    advance();
+
+    if (peek().is(Token::KW_elif)) {
+        advance(); //new
+    }
+    // advance(); 
     
     while (Tok.is(Token::KW_elif)) {
         //ERROR PRONE
@@ -316,7 +320,12 @@ Expr *Parser::parseIfElse()
         {
             error();
         }
-        advance();
+
+        if (peek().is(Token::KW_else)) {
+            advance(); //new
+        }
+        // advance();
+
         // if (!Tok.is(Token::KW_end))
         // {
         //     error();
