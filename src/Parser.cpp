@@ -21,13 +21,14 @@ AST *Parser::parseGSM()
             if (declaration)
                 exprs.push_back(declaration);
             else
-                break;
+                goto _error1; //new
+                // break;
 
-            if (expect(Token::semicolon))
-            {
-                error();
-            }
-            advance();
+            // if (expect(Token::semicolon))
+            // {
+            //     error();
+            // }
+            // advance();
             break;
 
         case Token::ident:
@@ -38,14 +39,18 @@ AST *Parser::parseGSM()
             if (!Tok.is(Token::semicolon))
             {
                 error();
+                goto _error1; //new
             }
+
             if (assign)
                 exprs.push_back(assign);
             else
-                error();
-            if(expect(Token::semicolon))
-                error();
-            advance();
+                goto _error1; //new
+                // error();
+
+            // if(expect(Token::semicolon))
+            //     error();
+            // advance();
             break;
 
 
@@ -70,7 +75,8 @@ AST *Parser::parseGSM()
             break;
 
         default:
-            error();
+            goto _error1; //new
+            // error();
             break;
         }
         //advance(); // TODO: watch this part
@@ -559,7 +565,7 @@ Expr *Parser::parseFactor()
     case Token::l_paren:
         advance();
         Res = parseExpression();
-        if (!consume(Token::r_paren))
+        if (!consume(Token::r_paren)) //new
             break;
         // if (!expect(Token::r_paren)){
         //     advance();
