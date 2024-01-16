@@ -86,7 +86,7 @@ AST *Parser::parseGSM()
             // error();
             break;
         }
-        
+
         advance(); // TODO: watch this part
     }
     return new GSM(exprs);
@@ -279,22 +279,31 @@ Expr *Parser::parseIfElse()
         temp_assignments.clear();
         
         while (!Tok.is(Token::KW_end)){
-            if (Tok.is(Token::ident)) {
-            A = parseAssign();
-
-            if (!Tok.is(Token::semicolon))
+            if (Tok.is(Token::ident)) 
             {
+                A = parseAssign();
+
+                if (!Tok.is(Token::semicolon))
+                {
+                    error();
+                }
+                advance();
+                if (A)
+                    temp_assignments.push_back(A);
+                else
+                    error();
+            } 
+
+            else {
                 error();
             }
-            advance();
-            if (A)
-                temp_assignments.push_back(A);
-            else
-                error();
-        } else error();
         }
 
         assignments.push_back(temp_assignments);
+        if (expect(Token::KW_end))
+        {
+            error();
+        }
         advance();
         // if (!Tok.is(Token::KW_end))
         // {
@@ -333,11 +342,14 @@ Expr *Parser::parseIfElse()
                     temp_assignments.push_back(A);
                 else
                     error();
-            } else error();
+            } 
+            else {
+                error();
+            }
         }
 
         assignments.push_back(temp_assignments);
-        advance();
+        // advance(); //commented
         // if (!Tok.is(Token::KW_end))
         // {
         //     error();
@@ -422,7 +434,7 @@ Expr *Parser::parseLoop()
         error();
         goto _error4;
     }
-    advance();
+    // advance(); //commented
 
     return new Loop(E, assignments);
 _error4:
