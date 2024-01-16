@@ -84,7 +84,6 @@ void Lexer::next(Token &token)
     // check for special characters
     else if (charinfo::isSpecialCharacter(*BufferPtr))
     {
-        if (charinfo::isSpecialCharacter(*BufferPtr + 1))
         const char *end = BufferPtr + 1;
         while (charinfo::isSpecialCharacter(*end))
             ++end;
