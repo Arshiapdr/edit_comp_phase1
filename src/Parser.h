@@ -22,7 +22,7 @@ class Parser
     void advance() { Lex.next(Tok); }
 
     // Retrieves the next token without advancing
-    Token Parser::peek()
+    Token peek()
     {
         return Tok;
     }
