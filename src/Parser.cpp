@@ -371,9 +371,9 @@ Expr *Parser::parseIfElse()
 
     if (expect(Token::KW_end)){
         // error();
-        goto _error2;
+        goto _error3;
     }
-    
+
     return new IfElse(expressions, assignments, hasElse);// NEW
 _error3:
     while (Tok.getKind() != Token::eoi)
