@@ -21,17 +21,10 @@ class Parser
     // tests whether the look-ahead is of the expected kind
     void advance() { Lex.next(Tok); }
 
-    // Function to check the next token without advancing
-    bool Parser::peek(Token::Kind expectedKind) {
-        LexerState savedState = Tok.getSavedState(); // Save the current lexer state
-
-        advance(); // Advance to the next token
-        bool isExpected = Tok.is(expectedKind);
-
-        // Restore the lexer state to its original state
-        Tok.restoreState(savedState);
-
-        return isExpected;
+    // Retrieves the next token without advancing
+    Token Parser::peek()
+    {
+        return Tok;
     }
 
     bool expect(Token::TokenKind Kind)
@@ -77,6 +70,12 @@ public:
 
     // get the value of error flag
     bool hasError() { return HasError; }
+
+    // Retrieves the next token without advancing
+    Token peek()
+    {
+        return Tok;
+    }
 
     AST *parse();
 };
