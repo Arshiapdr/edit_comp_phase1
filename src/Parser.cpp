@@ -592,7 +592,7 @@ Expr *Parser::parseFactor()
         advance();
         Res = parseExpression();
         if (expect(Token::r_paren)){
-            error()
+            error();
         }
         advance();
         break;
