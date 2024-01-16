@@ -211,15 +211,15 @@ void Lexer::next(Token &token)
         formToken(token, BufferPtr + 1, tok); \
         break
             CASE('=', Token::equal);
-            CASE('+=', Token::plus_equal);
-            CASE('-=', Token::minus_equal);
-            CASE('*=', Token::mult_equal);
-            CASE('/=', Token::div_equal);
-            CASE('%=', Token::mod_equal);
-            CASE('==', Token::is_equal);
-            CASE('!=', Token::is_not_equal);
-            CASE('>=', Token::soft_comp_greater);
-            CASE('<=', Token::soft_comp_lower);
+            // CASE('+=', Token::plus_equal);
+            // CASE('-=', Token::minus_equal);
+            // CASE('*=', Token::mult_equal);
+            // CASE('/=', Token::div_equal);
+            // CASE('%=', Token::mod_equal);
+            // CASE('==', Token::is_equal);
+            // CASE('!=', Token::is_not_equal);
+            // CASE('>=', Token::soft_comp_greater);
+            // CASE('<=', Token::soft_comp_lower);
             CASE('>', Token::hard_comp_greater);
             CASE('<', Token::hard_comp_lower);
             CASE(',', Token::Token::comma);
@@ -240,6 +240,68 @@ void Lexer::next(Token &token)
         return;
     }
 
+    else if (charinfo::isSpecialCharacter(*BufferPtr)) {
+        const char *end = BufferPtr + 1;
+        while (charinfo::isSpecialCharacter(*end))
+            ++end;
+        llvm::StringRef Name(BufferPtr, end - BufferPtr);
+        Token::TokenKind kind;
+        bool is_valid = true;
+        if (Name == "+=")
+        {
+            kind = Token::plus_equal;
+        }
+        else if (Name == "-=")
+        {
+            kind = Token::minus_equal;
+        }
+        else if (Name == "*=")
+        {
+            kind = Token::mult_equal;
+        }
+        else if (Name == "/=")
+        {
+            kind = Token::div_equal;
+        }
+        else if (Name == "%=")
+        {
+            kind = Token::mod_equal;
+        }
+        else if (Name == "==")
+        {
+            kind = Token::is_equal;
+        }
+        else if (Name == "!=")
+        {
+            kind = Token::is_not_equal;
+        }
+        else if (Name == ">=")
+        {
+            kind = Token::soft_comp_greater;
+        }
+        else if (Name == "<=")
+        {
+            kind = Token::soft_comp_lower;
+        }
+        else {
+            is_valid = false;
+        }
+        if (is_valid)
+        {
+            formToken(token, end, kind);
+        }
+        else
+        {
+            formToken(token, BufferPtr + 1, Token::unknown);
+        }
+        return;
+    }
+
+    else
+    {
+        formToken(token, BufferPtr + 1, Token::unknown);
+        return;
+    }
 //  return;
 }
 
