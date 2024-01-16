@@ -81,129 +81,166 @@ void Lexer::next(Token &token)
         formToken(token, end, Token::number);
         return;
     }
-    // check for special characters
+    // // check for special characters
+    // else if (charinfo::isSpecialCharacter(*BufferPtr))
+    // {
+    //     const char *end = BufferPtr + 1;
+    //     while (charinfo::isSpecialCharacter(*end))
+    //         ++end;
+    //     llvm::StringRef Name(BufferPtr, end - BufferPtr);
+    //     Token::TokenKind kind;
+    //     bool is_valid = true;
+    //     if (Name == "=")
+    //     {
+    //         kind = Token::equal;
+    //     }
+    //     else if (Name == "+=")
+    //     {
+    //         kind = Token::plus_equal;
+    //     }
+    //     else if (Name == "-=")
+    //     {
+    //         kind = Token::minus_equal;
+    //     }
+    //     else if (Name == "*=")
+    //     {
+    //         kind = Token::mult_equal;
+    //     }
+    //     else if (Name == "/=")
+    //     {
+    //         kind = Token::div_equal;
+    //     }
+    //     else if (Name == "%=")
+    //     {
+    //         kind = Token::mod_equal;
+    //     }
+    //     else if (Name == "==")
+    //     {
+    //         kind = Token::is_equal;
+    //     }
+    //     else if (Name == "!=")
+    //     {
+    //         kind = Token::is_not_equal;
+    //     }
+    //     else if (Name == ">=")
+    //     {
+    //         kind = Token::soft_comp_greater;
+    //     }
+    //     else if (Name == "<=")
+    //     {
+    //         kind = Token::soft_comp_lower;
+    //     }
+    //     else if (Name == ">")
+    //     {
+    //         kind = Token::hard_comp_greater;
+    //     }
+    //     else if (Name == "<")
+    //     {
+    //         kind = Token::hard_comp_lower;
+    //     }
+    //     else if (Name == ",")
+    //     {
+    //         kind = Token::comma;
+    //     }
+    //     else if (Name == ";")
+    //     {
+    //         kind = Token::semicolon;
+    //     }
+    //     else if (Name == "+")
+    //     {
+    //         kind = Token::plus;
+    //     }
+    //     else if (Name == "-")
+    //     {
+    //         kind = Token::minus;
+    //     }
+    //     else if (Name == "*")
+    //     {
+    //         kind = Token::star;
+    //     }
+    //     else if (Name == "/")
+    //     {
+    //         kind = Token::slash;
+    //     }
+    //     else if (Name == "%")
+    //     {
+    //         kind = Token::mod;
+    //     }
+    //     else if (Name == "^")
+    //     {
+    //         kind = Token::power;
+    //     }
+    //     else if (Name == ":")
+    //     {
+    //         kind = Token::colon;
+    //     }
+    //     else if (Name == "(")
+    //     {
+    //         kind = Token::l_paren;
+    //     }
+    //     else if (Name == ")")
+    //     {
+    //         kind = Token::r_paren;
+    //     }
+    //     else {
+    //         is_valid = false;
+    //     }
+
+    //     if (is_valid)
+    //     {
+    //         formToken(token, end, kind);
+    //     }
+    //     else
+    //     {
+    //         formToken(token, BufferPtr + 1, Token::unknown);
+    //     }
+    //     return;
+    // }    
+    // // check for unknown characters
+    // else
+    // {
+    // formToken(token, BufferPtr + 1, Token::unknown);
+    // return;
+    // }
     else if (charinfo::isSpecialCharacter(*BufferPtr))
     {
-        const char *end = BufferPtr + 1;
-        while (charinfo::isSpecialCharacter(*end))
-            ++end;
-        llvm::StringRef Name(BufferPtr, end - BufferPtr);
-        Token::TokenKind kind;
-        bool is_valid = true;
-        if (Name == "=")
+        switch (*BufferPtr)
         {
-            kind = Token::equal;
-        }
-        else if (Name == "+=")
-        {
-            kind = Token::plus_equal;
-        }
-        else if (Name == "-=")
-        {
-            kind = Token::minus_equal;
-        }
-        else if (Name == "*=")
-        {
-            kind = Token::mult_equal;
-        }
-        else if (Name == "/=")
-        {
-            kind = Token::div_equal;
-        }
-        else if (Name == "%=")
-        {
-            kind = Token::mod_equal;
-        }
-        else if (Name == "==")
-        {
-            kind = Token::is_equal;
-        }
-        else if (Name == "!=")
-        {
-            kind = Token::is_not_equal;
-        }
-        else if (Name == ">=")
-        {
-            kind = Token::soft_comp_greater;
-        }
-        else if (Name == "<=")
-        {
-            kind = Token::soft_comp_lower;
-        }
-        else if (Name == ">")
-        {
-            kind = Token::hard_comp_greater;
-        }
-        else if (Name == "<")
-        {
-            kind = Token::hard_comp_lower;
-        }
-        else if (Name == ",")
-        {
-            kind = Token::comma;
-        }
-        else if (Name == ";")
-        {
-            kind = Token::semicolon;
-        }
-        else if (Name == "+")
-        {
-            kind = Token::plus;
-        }
-        else if (Name == "-")
-        {
-            kind = Token::minus;
-        }
-        else if (Name == "*")
-        {
-            kind = Token::star;
-        }
-        else if (Name == "/")
-        {
-            kind = Token::slash;
-        }
-        else if (Name == "%")
-        {
-            kind = Token::mod;
-        }
-        else if (Name == "^")
-        {
-            kind = Token::power;
-        }
-        else if (Name == ":")
-        {
-            kind = Token::colon;
-        }
-        else if (Name == "(")
-        {
-            kind = Token::l_paren;
-        }
-        else if (Name == ")")
-        {
-            kind = Token::r_paren;
-        }
-        else {
-            is_valid = false;
-        }
-
-        if (is_valid)
-        {
-            formToken(token, end, kind);
-        }
-        else
-        {
+#define CASE(ch, tok)                         \
+    case ch:                                  \
+        formToken(token, BufferPtr + 1, tok); \
+        break
+            CASE('=', Token::equal);
+            CASE('+=', Token::plus_equal);
+            CASE('-=', Token::minus_equal);
+            CASE('*=', Token::mult_equal);
+            CASE('/=', Token::div_equal);
+            CASE('%=', Token::mod_equal);
+            CASE('==', Token::is_equal);
+            CASE('!=', Token::is_not_equal);
+            CASE('>=', Token::soft_comp_greater);
+            CASE('<=', Token::soft_comp_lower);
+            CASE('>', Token::hard_comp_greater);
+            CASE('<', Token::hard_comp_lower);
+            CASE(',', Token::Token::comma);
+            CASE(';', Token::semicolon);
+            CASE('+', Token::plus);
+            CASE('-', Token::minus);
+            CASE('*', Token::star);
+            CASE('/', Token::slash);
+            CASE('%', Token::mod);
+            CASE('^', Token::power);
+            CASE(':', Token::colon);
+            CASE('(', Token::l_paren);
+            CASE(')', Token::r_paren);
+#undef CASE
+        default:
             formToken(token, BufferPtr + 1, Token::unknown);
         }
         return;
-    }    
-    // check for unknown characters
-    else
-    {
-    formToken(token, BufferPtr + 1, Token::unknown);
-    return;
     }
 
- return;
+//  return;
 }
 
 void Lexer::formToken(Token &Tok, const char *TokEnd,
