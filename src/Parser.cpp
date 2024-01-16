@@ -559,10 +559,12 @@ Expr *Parser::parseFactor()
     case Token::l_paren:
         advance();
         Res = parseExpression();
-        if (!expect(Token::r_paren)){
-            advance();
+        if (!consume(Token::r_paren))
             break;
-        }
+        // if (!expect(Token::r_paren)){
+        //     advance();
+        //     break;
+        // }
     default: // error handling
         if (!Res)
             error();
