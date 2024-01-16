@@ -23,6 +23,13 @@ AST *Parser::parseGSM()
             else
                 goto _error1; //new
                 // break;
+            
+            
+            if (!Tok.is(Token::semicolon))
+            {
+                error();
+                goto _error1; //new
+            }
 
             // if (expect(Token::semicolon))
             // {
@@ -79,7 +86,8 @@ AST *Parser::parseGSM()
             // error();
             break;
         }
-        //advance(); // TODO: watch this part
+        
+        advance(); // TODO: watch this part
     }
     return new GSM(exprs);
 _error1:
