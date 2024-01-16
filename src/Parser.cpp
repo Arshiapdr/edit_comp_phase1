@@ -374,6 +374,8 @@ Expr *Parser::parseIfElse()
         goto _error3;
     }
 
+    advance(); //new
+
     return new IfElse(expressions, assignments, hasElse);// NEW
 _error3:
     while (Tok.getKind() != Token::eoi)
@@ -452,6 +454,8 @@ Expr *Parser::parseLoop()
         error();
         goto _error4;
     }
+
+    advance(); //new
     // advance(); //commented
 
     return new Loop(E, assignments);
