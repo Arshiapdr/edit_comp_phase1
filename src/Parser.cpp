@@ -65,6 +65,12 @@ AST *Parser::parseGSM()
             Expr *ifelse;
             ifelse = parseIfElse();
 
+            if (!Tok.is(Token::KW_end))
+            {
+                error();
+                goto _error1; //new
+            }
+
             if (ifelse)
                 exprs.push_back(ifelse);
             else
@@ -74,6 +80,12 @@ AST *Parser::parseGSM()
         case Token::KW_loopc:
             Expr *loop;
             loop = parseLoop();
+
+            if (!Tok.is(Token::KW_end))
+            {
+                error();
+                goto _error1; //new
+            }
 
             if (loop)
                 exprs.push_back(loop);
@@ -356,6 +368,12 @@ Expr *Parser::parseIfElse()
         //     goto _error3;
         // }
     }
+
+    if (expect(Token::KW_end)){
+        // error();
+        goto _error2;
+    }
+    
     return new IfElse(expressions, assignments, hasElse);// NEW
 _error3:
     while (Tok.getKind() != Token::eoi)
