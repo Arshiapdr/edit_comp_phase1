@@ -21,6 +21,14 @@ class Parser
     // tests whether the look-ahead is of the expected kind
     void advance() { Lex.next(Tok); }
 
+    // Peeks at the next token without advancing the lexer's position
+    Token peek()
+    {
+        Token NextToken;
+        Lex.next(NextToken, false);
+        return NextToken;
+    }
+
     bool expect(Token::TokenKind Kind)
     {
         if (Tok.getKind() != Kind)
