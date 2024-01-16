@@ -65,11 +65,11 @@ AST *Parser::parseGSM()
             Expr *ifelse;
             ifelse = parseIfElse();
 
-            if (!Tok.is(Token::KW_end))
-            {
-                error();
-                goto _error1; //new
-            }
+            // if (!Tok.is(Token::KW_end))
+            // {
+            //     error();
+            //     goto _error1; //new
+            // }
 
             if (ifelse)
                 exprs.push_back(ifelse);
