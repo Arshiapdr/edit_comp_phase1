@@ -559,12 +559,15 @@ Expr *Parser::parseFactor()
     case Token::l_paren:
         advance();
         Res = parseExpression();
+         if (!Tok.is(Token::semicolon) {
+             error();
+             break;
+         }
+        advance();
         if (!expect(Token::r_paren)){
             advance();
             break;
         }
-        error(); //new
-        break; //new
     default: // error handling
         if (!Res)
             error();
