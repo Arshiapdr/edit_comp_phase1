@@ -96,8 +96,8 @@ Expr *Parser::parseDeclaration()
     llvm::SmallVector<llvm::StringRef, 8> Vars;
     llvm::SmallVector<Expr *> Exprs;
 
-    if (expect(Token::KW_int)){
-        error();
+    if (!Tok.is(Token::KW_int)){
+        // error();
         goto _error2;
     }
 
@@ -117,7 +117,7 @@ Expr *Parser::parseDeclaration()
         advance();
 
         if (expect(Token::ident)){
-            error();
+            // error();
             goto _error2;
         }
 
@@ -143,8 +143,8 @@ Expr *Parser::parseDeclaration()
         }
     }
 
-    if (!Tok.is(Token::semicolon) || exprs_count > vars_count){
-        error();
+    if (expect(Token::semicolon) || exprs_count > vars_count){
+        // error();
         goto _error2;
     }
 
