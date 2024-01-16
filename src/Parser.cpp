@@ -563,7 +563,7 @@ Expr *Parser::parseFactor()
             advance();
             break;
         }
-        error("Expected closing parenthesis ')'"); //new
+        error(); //new
         break; //new
     default: // error handling
         if (!Res)
