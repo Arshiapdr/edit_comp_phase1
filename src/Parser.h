@@ -24,8 +24,7 @@ class Parser
     // Peeks at the next token without advancing the lexer's position
     Token peek()
     {
-        Token NextToken;
-        Lex.next(NextToken, false);
+        Token NextToken = Tok;
         return NextToken;
     }
 
