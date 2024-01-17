@@ -26,7 +26,7 @@
 using namespace llvm;
 
 llvm::SmallVector<llvm::StringRef> allVars;
-StringMap<std::vector<StringRef>> dependsMap;
+StringMap<llvm::SmallVector<StringRef>> dependsMap;
 llvm::SmallVector<llvm::StringRef> deadVars;
 llvm::SmallVector<llvm::StringRef> alive;
 
