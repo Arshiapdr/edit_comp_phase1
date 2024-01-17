@@ -36,6 +36,7 @@ namespace
 {
   class IdentifiersCollector : public ASTVisitor
   {
+    public:
   
     virtual void visit(GSM &Node) override
     {
@@ -61,6 +62,8 @@ namespace
     virtual void visit(Factor &) override {}; 
     virtual void visit(Loop &) override {};
     virtual void visit(IfElse &) override {}; 
+
+
 
     void collect(AST *Tree)
     {
@@ -564,6 +567,8 @@ void CodeGen::computeDepends(AST *Tree){
 // initialize deadVars
 void CodeGen::computeDead()
 {
+  void addDependenciesRecursive();
+
   llvm::SmallVector<llvm::StringRef> resultDepends = dependsMap["result"];//error prone
   for(const auto &variable : resultDepends)
   {
@@ -573,7 +578,7 @@ void CodeGen::computeDead()
   for(const auto &variable : allVars)
   {
     // Check if var is not in alive
-    if (llvm::find(alive, var) == alive.end()) 
+    if (llvm::find(alive,variable ) == alive.end()) 
     {
         // Add var to deadVars
         deadVars.push_back(var);
