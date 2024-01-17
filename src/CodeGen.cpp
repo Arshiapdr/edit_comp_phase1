@@ -103,13 +103,13 @@ namespace
 
           // map[var] = depends
           dependsMap[varName] = tempDepends;
-          
           depends.clear();
         }
-        // else
-        // {
-        //   //do nothing since no dependency is found
-        // }
+        else
+        {
+          //do nothing since no dependency is found
+          depends.clear();
+        }
 
       };
       
@@ -581,7 +581,10 @@ void CodeGen::computeDead()
     if (llvm::find(alive,variable ) == alive.end()) 
     {
         // Add var to deadVars
-        deadVars.push_back(variable);
+        // if(variable != "result")
+        // {
+          deadVars.push_back(variable);
+        // }
     }
   }
 }
