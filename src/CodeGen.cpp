@@ -163,7 +163,7 @@ namespace
         // Initialize dependsMap with keys from allVars
         for (const auto &var : allVars)
           {
-          dependsMap[var] = std::vector<llvm::StringRef>;//HERE
+          dependsMap[var] = llvm::SmallVector<StringRef>();//HERE
           }
       Tree->accept(*this);
       }
