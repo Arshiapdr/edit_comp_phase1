@@ -567,7 +567,7 @@ void CodeGen::computeDepends(AST *Tree){
 // initialize deadVars
 void CodeGen::computeDead()
 {
-  void addDependenciesRecursive();
+  void addDependenciesRecursive(const llvm::StringRef &variable, llvm::SmallVector<llvm::StringRef> &alive);
 
   llvm::SmallVector<llvm::StringRef> resultDepends = dependsMap["result"];//error prone
   for(const auto &variable : resultDepends)
@@ -581,7 +581,7 @@ void CodeGen::computeDead()
     if (llvm::find(alive,variable ) == alive.end()) 
     {
         // Add var to deadVars
-        deadVars.push_back(var);
+        deadVars.push_back(variable);
     }
   }
 }
