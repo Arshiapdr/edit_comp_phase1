@@ -581,10 +581,10 @@ void CodeGen::computeDead()
     if (llvm::find(alive,variable ) == alive.end()) 
     {
         // Add var to deadVars
-        // if(variable != "result")
-        // {
+        if(variable != "result")
+        {
           deadVars.push_back(variable);
-        // }
+        }
     }
   }
 }
