@@ -97,7 +97,7 @@ namespace
         StringRef varName = *var;
         llvm::outs() << "Variable Name: " << varName << "\n";
 
-        if(*expression)
+        if (expression != Node.endExprs())
         {
           llvm::outs() << "HERE 1!\n";
           (*expression)->accept(*this);
