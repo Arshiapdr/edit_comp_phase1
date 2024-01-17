@@ -83,13 +83,14 @@ namespace
       {
         auto expression = Node.beginExprs();
         auto var = Node.beginVars();
+        StringRef varName = *var;
 
         if(*expression)
         {
           (*expression)->accept(*this);
 
           //map[var] = depends
-          dependsMap[*var] = depends;
+          dependsMap[varName] = depends;
           //depends.clear
           depends.clear();
         }
@@ -128,18 +129,18 @@ namespace
         auto operation = Node.getOperator();
         if(operation == Assignment::Eq)
         {
-          dependsMap[*var].clear();
+          dependsMap[var].clear();
           Node.getRight()->accept(*this);
 
           //map[var] = depends
-          dependsMap[*var] = depends;
+          dependsMap[var] = depends;
           //depends.clear
           depends.clear();
         }
         else// += -= etc
         {
           Node.getRight()->accept(*this);
-          dependsMap[*var].insert(dependsMap[*var].end(), depends.begin(), depends.end());
+          dependsMap[var].insert(dependsMap[var].end(), depends.begin(), depends.end());
           depends.clear();
 
         }
@@ -152,7 +153,7 @@ namespace
         // Initialize dependsMap with keys from allVars
         for (const auto &var : allVars)
           {
-          dependsMap[*var] = std::vector<llvm::StringRef>();
+          dependsMap[var] = std::vector<llvm::StringRef>();//HERE
           }
       Tree->accept(*this);
       }
@@ -578,7 +579,7 @@ void addDependenciesRecursive(const llvm::StringRef &variable, llvm::SmallVector
         alive.push_back(variable);
 
         // Recursively add dependencies
-        const auto &dependencies = dependsMap[*variable];
+        const auto &dependencies = dependsMap[variable];
         for (const auto &dependency : dependencies) {
             addDependenciesRecursive(dependency, alive);
         }
