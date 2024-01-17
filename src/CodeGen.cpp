@@ -6,6 +6,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/STLExtras.h" 
+#include "llvm/Support/raw_ostream.h"
 
   /*
 
@@ -91,25 +92,31 @@ namespace
       virtual void visit(Declaration &Node) override
       {
         auto expression = Node.beginExprs();
+        llvm::outs() << "HERE 0!\n";
         auto var = Node.beginVars();
         StringRef varName = *var;
+        llvm::outs() << "Variable Name: " << varName << "\n";
 
         if(*expression)
         {
+          llvm::outs() << "HERE 1!\n";
           (*expression)->accept(*this);
-
+          llvm::outs() << "HERE 2!\n";
 
           llvm::SmallVector<llvm::StringRef> tempDepends(depends.begin(), depends.end());
-
+          llvm::outs() << "HERE 3!\n";
           // map[var] = depends
           dependsMap[varName] = tempDepends;
+          llvm::outs() << "HERE 4!\n";
           depends.clear();
+          llvm::outs() << "HERE 5!\n";
         }
         else
         {
           //do nothing since no dependency is found
-          depends.clear();
+          // depends.clear();
         }
+        llvm::outs() << "HERE 6!\n";
 
       };
       
