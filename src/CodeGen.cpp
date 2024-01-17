@@ -74,9 +74,6 @@ namespace
 
   
   
-  
-  
-  
   class ComputeDepends : public ASTVisitor
   {   
     public:
@@ -101,9 +98,12 @@ namespace
         {
           (*expression)->accept(*this);
 
-          //map[var] = depends
-          dependsMap[varName] = depends;
-          //depends.clear
+
+          llvm::SmallVector<llvm::StringRef> tempDepends(depends.begin(), depends.end());
+
+          // map[var] = depends
+          dependsMap[varName] = tempDepends;
+          
           depends.clear();
         }
         else
