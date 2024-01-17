@@ -143,12 +143,14 @@ namespace
 
       virtual void visit(BinaryOp &Node) override
       {
+        llvm::outs() << "HERE BINARYOP1!\n";
         Node.getLeft()->accept(*this);
         Node.getRight()->accept(*this);
       };
 
       virtual void visit(Assignment &Node) override 
       {
+        llvm::outs() << "HERE ASSIGNMENT1!\n";
         auto var = Node.getLeft()->getVal();
         auto operation = Node.getOperator();
         if(operation == Assignment::Eq)
