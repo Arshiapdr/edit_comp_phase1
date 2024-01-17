@@ -122,14 +122,21 @@ namespace
       
       virtual void visit(Factor &Node) override
       {
+        llvm::outs() << "HERE FACTOR1!\n";
         if (Node.getKind() == Factor::Ident)
         {
           // if is Ident add the var to depends
+          llvm::outs() << "HERE FACTOR2!\n";
+
           llvm::StringRef var = Node.getVal();
+          llvm::outs() << "HERE FACTOR3!\n";
+
           if (llvm::find(depends, var) == depends.end())
           {
+            llvm::outs() << "HERE FACTOR4!\n";
             // If it's not in depends, add it
             depends.push_back(var);
+            llvm::outs() << "HERE FACTOR5!\n";
           }
         }
       };
