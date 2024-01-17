@@ -92,65 +92,50 @@ namespace
       virtual void visit(Declaration &Node) override
       {
         auto expression = Node.beginExprs();
-        llvm::outs() << "HERE 0!\n";
         auto var = Node.beginVars();
         StringRef varName = *var;
-        llvm::outs() << "Variable Name: " << varName << "\n";
 
         if (expression != Node.endExprs())
         {
-          llvm::outs() << "HERE 1!\n";
           (*expression)->accept(*this);
-          llvm::outs() << "HERE 2!\n";
 
           llvm::SmallVector<llvm::StringRef> tempDepends(depends.begin(), depends.end());
-          llvm::outs() << "HERE 3!\n";
           // map[var] = depends
           dependsMap[varName] = tempDepends;
-          llvm::outs() << "HERE 4!\n";
           depends.clear();
-          llvm::outs() << "HERE 5!\n";
         }
         else
         {
           //do nothing since no dependency is found
           // depends.clear();
         }
-        llvm::outs() << "HERE 6!\n";
 
       };
       
       virtual void visit(Factor &Node) override
       {
-        llvm::outs() << "HERE FACTOR1!\n";
         if (Node.getKind() == Factor::Ident)
         {
           // if is Ident add the var to depends
-          llvm::outs() << "HERE FACTOR2!\n";
 
           llvm::StringRef var = Node.getVal();
-          llvm::outs() << "HERE FACTOR3!\n";
 
           if (llvm::find(depends, var) == depends.end())
           {
-            llvm::outs() << "HERE FACTOR4!\n";
             // If it's not in depends, add it
             depends.push_back(var);
-            llvm::outs() << "HERE FACTOR5!\n";
           }
         }
       };
 
       virtual void visit(BinaryOp &Node) override
       {
-        llvm::outs() << "HERE BINARYOP1!\n";
         Node.getLeft()->accept(*this);
         Node.getRight()->accept(*this);
       };
 
       virtual void visit(Assignment &Node) override 
       {
-        llvm::outs() << "HERE ASSIGNMENT1!\n";
         auto var = Node.getLeft()->getVal();
         auto operation = Node.getOperator();
         if(operation == Assignment::Eq)
@@ -603,6 +588,11 @@ void CodeGen::computeDead()
         }
     }
   }
+  for (const auto &var : deadVars)
+  {
+    llvm::outs() << "dead " << var << "\n";
+  }
+
 }
 
 //auxiliary function to perfrom the recursice algorithm
