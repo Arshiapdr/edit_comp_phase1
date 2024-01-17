@@ -46,7 +46,6 @@ namespace
       }
     };
 
-
     virtual void visit(Declaration &Node) override
     {
       auto Vars_iterator = Node.beginVars();
@@ -57,14 +56,24 @@ namespace
     };
 
 
+    virtual void visit(Assignment &) override {}; 
+    virtual void visit(BinaryOp &) override {};
+    virtual void visit(Factor &) override {}; 
+    virtual void visit(Loop &) override {};
+    virtual void visit(IfElse &) override {}; 
+
     void collect(AST *Tree)
     {
       Tree->accept(*this);
     }
 
-
   };
 
+  
+  
+  
+  
+  
   class ComputeDepends : public ASTVisitor
   {   
     public:
@@ -121,8 +130,6 @@ namespace
         Node.getRight()->accept(*this);
       };
 
-
-
       virtual void visit(Assignment &Node) override 
       {
         auto var = Node.getLeft()->getVal();
@@ -147,13 +154,16 @@ namespace
       
       };
 
+      virtual void visit(Loop &) override {};
+      virtual void visit(IfElse &) override {};
+
 
     void compute(AST *Tree)
       {
         // Initialize dependsMap with keys from allVars
         for (const auto &var : allVars)
           {
-          dependsMap[var] = std::vector<llvm::StringRef>();//HERE
+          dependsMap[var] = std::vector<llvm::StringRef>;//HERE
           }
       Tree->accept(*this);
       }
